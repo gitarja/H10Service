@@ -11,6 +11,7 @@ def timeNow():
 
 class SendReadUDP(QThread):
     is_started = pyqtSignal(int)
+    capture_start = False
 
     def __init__(self, is_read: bool = True):
         QThread.__init__(self)
@@ -30,13 +31,15 @@ class SendReadUDP(QThread):
                 data, addr = self.sock.recvfrom(300)
                 # print(data)
                 # Echo the data back to the sender
-                if "CaptureStart" in data.decode("utf-8"):
+                if "CaptureStart" in data.decode("utf-8") and not self.capture_start:
                     print("Nexus is started at: " + timeNow())
                     self.is_started.emit(1)
+                    self.capture_start = True
                     # break
-                elif "CaptureStop" in data.decode("utf-8"):
+                elif "CaptureStop" in data.decode("utf-8") and self.capture_start:
                     print("Nexus is stop at: " + timeNow())
                     self.is_started.emit(1)
+                    self.capture_start = False
 
             except socket.error:
                 # If no data is received, you get here, but it's not an error

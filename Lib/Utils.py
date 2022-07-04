@@ -7,4 +7,4 @@ class RecordingStatus:
     INITIALIZED = 3
 
 class Recording:
-    PATH = "F:\\users\\prasetia\\results\\H10-recording\\"
+    PATH = "C:\\Users\\human-01\\results\\"

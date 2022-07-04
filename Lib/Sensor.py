@@ -47,16 +47,17 @@ class SensorScanner(QObject):
         self.sensor_client.recording_status.emit(RecordingStatus.SEARCHING_SENSORS)
         self.scanner.start()
 
+
     def startRecording(self):
         if self.sensor != None:
-            self.sensor_client.connect_client(self.sensor)
+            self.sensor_client.startRecording()
         else:
             self.scan()
 
     def stopRecording(self):
-        self.sensor_client.disconnect_client()
         self.status_update.emit("Recording complete")
         self.sensor_client.recording_status.emit(RecordingStatus.INITIALIZED)
+        self.sensor_client.start_recording = False
 
 
     def _handle_scan_result(self):
@@ -70,10 +71,11 @@ class SensorScanner(QObject):
         self.sensor = polar_sensors[0] # take the first sensor
         self.status_update.emit("Sensor is ready")
         self.sensor_client.recording_status.emit(RecordingStatus.READY)
+        self.sensor_client.connect_client(self.sensor)
 
 
     def _handle_scan_error(self, error):
-        self.status_update.emit(error)
+        self.status_update.emit("Error")
 
 
 class SensorClient(QObject):
@@ -87,6 +89,8 @@ class SensorClient(QObject):
     ibi_update = pyqtSignal(object)
     status_update = pyqtSignal(str)
     recording_status = pyqtSignal(int)
+    start_recording = False
+
 
     def __init__(self):
         super().__init__()
@@ -144,15 +148,21 @@ class SensorClient(QObject):
         if not self.hr_service:
             self.status_update.emit(f"Couldn't establish connection to HR service on {self._sensor_address()}.")
             return
-        # start record data from sensor
-        self.status_update.emit("Recording")
-        self.log.initializeLog(Recording.PATH + str(currentDateTime()) + ".csv")
-        self.recording_status.emit(RecordingStatus.RECORDING)
 
         # create a service and connect to it
         self.hr_service.stateChanged.connect(self._start_hr_notification)
         self.hr_service.characteristicChanged.connect(self._data_handler)
         self.hr_service.discoverDetails()
+
+
+
+    def startRecording(self):
+        self.status_update.emit("Recording")
+        self.log.initializeLog(Recording.PATH + str(currentDateTime()) + ".csv")
+        self.recording_status.emit(RecordingStatus.RECORDING)
+        self.start_recording = True
+
+
 
     def _start_hr_notification(self, state):
         # if state != QLowEnergyService.RemoteServiceDiscovered:
@@ -256,5 +266,6 @@ class SensorClient(QObject):
             # transmit data in milliseconds.
             ibi = ceil(ibi / 1024 * 1000)
             # write rr into a csv file
-            self.log.write(ibi, record_time)
+            if self.start_recording:
+                self.log.write(ibi, record_time)
             # self.ibi_update.emit(ibi)
