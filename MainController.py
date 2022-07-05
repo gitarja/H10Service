@@ -2,7 +2,7 @@ from PyQt5 import QtCore, QtWidgets
 import sys
 from MainUI import Ui_MainWindow
 from Lib.Sensor import SensorScanner
-from Lib.Utils import RecordingStatus
+from Lib.Conf import RECORDING_STATUS
 from Lib.Sender import SendReadUDP
 from PyQt5.QtCore import QThread
 
@@ -62,13 +62,13 @@ class MainController:
 
 
     def updateRecordingStatus(self, status):
-        if status==RecordingStatus.SEARCHING_SENSORS:
+        if status==RECORDING_STATUS.SEARCHING_SENSORS:
             self.view.startStopButton.setEnabled(False)
-        elif status == RecordingStatus.RECORDING:
+        elif status == RECORDING_STATUS.RECORDING:
             self.view.startStopButton.setText("Stop")
             self.view.startStopButton.setEnabled(True)
             self.recording_status = 2
-        elif status == RecordingStatus.READY or status == RecordingStatus.INITIALIZED:
+        elif status == RECORDING_STATUS.READY or status == RECORDING_STATUS.INITIALIZED:
             self.view.startStopButton.setText("Start Recording")
             self.view.startStopButton.setEnabled(True)
             self.recording_status = 1

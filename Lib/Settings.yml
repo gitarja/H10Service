@@ -3,3 +3,13 @@ VICON:
   TRIAL_NAME: "TRIAL_"
   UDP_IP: "192.168.20.56"  # address to send UDP, assigned in NEXUS Recording
   UDP_PORT: 49147  # port assigned in NEXUS Recording
+
+RECORDING_STATUS:
+  SEARCHING_SENSORS: -1
+  READY: 0
+  RECORDING: 1
+  FAILED_TO_CONNECT: 2
+  INITIALIZED: 3
+
+RECORDING:
+  PATH: "C:\\Users\\human-01\\results\\"

@@ -6,7 +6,7 @@ from PyQt5.QtBluetooth import (QBluetoothDeviceDiscoveryAgent,
 from Lib.Logger import Logger
 from math import ceil
 from datetime import datetime
-from Lib.Utils import RecordingStatus, Recording
+from Lib.Conf import RECORDING_STATUS, RECORDING
 
 
 def currentDateTime()-> str:
@@ -44,7 +44,7 @@ class SensorScanner(QObject):
 
             return
         self.status_update.emit("Searching for sensors (this might take a while).")
-        self.sensor_client.recording_status.emit(RecordingStatus.SEARCHING_SENSORS)
+        self.sensor_client.recording_status.emit(RECORDING_STATUS.SEARCHING_SENSORS)
         self.scanner.start()
 
 
@@ -56,7 +56,7 @@ class SensorScanner(QObject):
 
     def stopRecording(self):
         self.status_update.emit("Recording complete")
-        self.sensor_client.recording_status.emit(RecordingStatus.INITIALIZED)
+        self.sensor_client.recording_status.emit(RECORDING_STATUS.INITIALIZED)
         self.sensor_client.start_recording = False
 
 
@@ -65,12 +65,12 @@ class SensorScanner(QObject):
                          if "Polar" in str(d.name())]    # TODO: comment why rssi needs to be negative
         if not polar_sensors:
             self.status_update.emit("Couldn't find sensors.")
-            self.sensor_client.recording_status.emit(RecordingStatus.FAILED_TO_CONNECT)
+            self.sensor_client.recording_status.emit(RECORDING_STATUS.FAILED_TO_CONNECT)
 
             return
         self.sensor = polar_sensors[0] # take the first sensor
         self.status_update.emit("Sensor is ready")
-        self.sensor_client.recording_status.emit(RecordingStatus.READY)
+        self.sensor_client.recording_status.emit(RECORDING_STATUS.READY)
         self.sensor_client.connect_client(self.sensor)
 
 
@@ -142,7 +142,7 @@ class SensorClient(QObject):
         hr_service = [s for s in self.client.services() if s.toUInt16()[0] == self.HR_SERVICE]
         if not hr_service:
             self.status_update.emit(f"Couldn't find HR service on {self._sensor_address()}.")
-            self.recording_status.emit(RecordingStatus.FAILED_TO_CONNECT)
+            self.recording_status.emit(RECORDING_STATUS.FAILED_TO_CONNECT)
             return
         self.hr_service = self.client.createServiceObject(*hr_service)
         if not self.hr_service:
@@ -158,8 +158,8 @@ class SensorClient(QObject):
 
     def startRecording(self):
         self.status_update.emit("Recording")
-        self.log.initializeLog(Recording.PATH + str(currentDateTime()) + ".csv")
-        self.recording_status.emit(RecordingStatus.RECORDING)
+        self.log.initializeLog(RECORDING.PATH + str(currentDateTime()) + ".csv")
+        self.recording_status.emit(RECORDING_STATUS.RECORDING)
         self.start_recording = True
 
 
