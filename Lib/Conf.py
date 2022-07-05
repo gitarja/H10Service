@@ -1,12 +1,16 @@
+import yaml
+from yaml.loader import SafeLoader
+from pathlib import Path
+
+base_path = Path(__file__).parent
+
+with open(base_path / "Settings.yml") as f:
+    settings = yaml.load(f, Loader=SafeLoader)
 
 # Vicon setting
 class VICON:
-    DATABASE_PATH = "C:\\Users\\human-01\\projects\\Nexus\\PingPong"
-    TRIAL_NAME = "TRIAL_"
-    UDP_IP = "192.168.20.56"  # address to send UDP, assigned in NEXUS Recording
-    UDP_PORT = 49147  # port assigned in NEXUS Recording
-
-
-# Tobii TTL
-class Tobii:
-    port_name = "COM5"  # the name / address we found for our device
+    # Open the file and load the file
+    DATABASE_PATH = settings["VICON"]["DATABASE_PATH"]
+    TRIAL_NAME = settings["VICON"]["TRIAL_NAME"]
+    UDP_IP = settings["VICON"]["UDP_IP"]  # address to send UDP, assigned in NEXUS Recording
+    UDP_PORT = settings["VICON"]["UDP_PORT"]  # port assigned in NEXUS Recording
