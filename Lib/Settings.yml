@@ -13,3 +13,7 @@ RECORDING_STATUS:
 
 RECORDING:
   PATH: "C:\\Users\\human-01\\results\\"
+
+
+TTL:
+  PORT: "/dev/ttyUSB0"

@@ -26,3 +26,8 @@ class RECORDING_STATUS:
 # Recording
 class RECORDING:
     PATH = settings["RECORDING"]["PATH"]
+
+
+# TTL
+class TTL:
+    PORT = settings["TTL"]["PORT"]

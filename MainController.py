@@ -2,9 +2,12 @@ from PyQt5 import QtCore, QtWidgets
 import sys
 from MainUI import Ui_MainWindow
 from Lib.Sensor import SensorScanner
-from Lib.Conf import RECORDING_STATUS
-from Lib.Sender import SendReadUDP
+from Lib.Conf import RECORDING_STATUS, TTL
+from Lib.Sender import SendReadUDP, TTLSender
+import serial
 from PyQt5.QtCore import QThread
+import RPi.GPIO as GPIO
+import time
 
 class MainController:
 
@@ -27,6 +30,19 @@ class MainController:
         self.udp_send_read = SendReadUDP()
         self.udp_send_read.is_started.connect(self.startStopRecording)
         self.udp_send_read.start(priority=QThread.HighestPriority)
+
+        # ttl sender
+
+        self.ttl_sender = TTLSender()
+        # set serial for TTL sender
+        self.ser = serial.Serial(
+            port=TTL.PORT,  # please make sure the port name is correct
+            baudrate=115200,  # maximum baud rate 115200
+            bytesize=serial.EIGHTBITS,  # set this to the amount of data you want to send
+            stopbits=serial.STOPBITS_ONE,
+            timeout=0
+        )
+        self.ttl_sender.setSerial(self.ser)
 
 
     @property
@@ -52,6 +68,10 @@ class MainController:
 
         if self.recording_status == 1:
             self.scanner.startRecording()
+            self.ttl_sender.start(priority=QThread.HighestPriority)  # send ttl
+            self.ttl_sender.stop()  # stop
+            self.playNotification()
+
         elif self.recording_status == 2:
             self.scanner.stopRecording()
         else:
@@ -76,3 +96,15 @@ class MainController:
             self.view.startStopButton.setText("Start")
             self.view.startStopButton.setEnabled(True)
             self.recording_status = 0
+
+    def playNotification():
+        BuzzerPin = 23
+
+        GPIO.setwarnings(False)
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(BuzzerPin, GPIO.OUT, initial=GPIO.LOW)
+
+        GPIO.output(BuzzerPin, GPIO.HIGH)
+        time.sleep(0.5)
+        print("Beep")
+        GPIO.output(BuzzerPin, GPIO.LOW)
