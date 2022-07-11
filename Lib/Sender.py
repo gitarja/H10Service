@@ -30,7 +30,7 @@ class TTLSender():
         self.ser.write(LOW)
         self.ser.write(HIGH)
         t1 = perf_counter()
-        while perf_counter() - t1 < (1.):
+        while perf_counter() - t1 < (100./1000):
             None
         self.ser.write(LOW)
         self.ser.write(HIGH)

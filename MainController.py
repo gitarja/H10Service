@@ -93,7 +93,7 @@ class MainController:
         elif status == RECORDING_STATUS.READY or status == RECORDING_STATUS.INITIALIZED:
             self.view.startStopButton.setText("Ready")
             self.view.startStopButton.setStyleSheet("background-color: green")
-            self.view.startStopButton.setEnabled(True)
+            self.view.startStopButton.setEnabled(False)
             self.recording_status = 1
         else:
             self.view.startStopButton.setText("Start")
