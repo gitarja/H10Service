@@ -67,13 +67,14 @@ class MainController:
     def startStopRecording(self):
 
         if self.recording_status == 1:
+            self.ttl_sender.send()  # send ttl
             self.scanner.startRecording()
-            self.ttl_sender.start(priority=QThread.HighestPriority)  # send ttl
-            self.ttl_sender.stop()  # stop
+            
             self.playNotification()
 
         elif self.recording_status == 2:
             self.scanner.stopRecording()
+            self.playNotification()
         else:
             self.scanner.scan()
 
@@ -88,7 +89,7 @@ class MainController:
             self.view.startStopButton.setText("Stop")
             self.view.startStopButton.setEnabled(True)
             self.recording_status = 2
-        elif status == RECORDING_STATUS.READY:
+        elif status == RECORDING_STATUS.READY or status == RECORDING_STATUS.INITIALIZED:
             self.view.startStopButton.setText("Start Recording")
             self.view.startStopButton.setEnabled(True)
             self.recording_status = 1

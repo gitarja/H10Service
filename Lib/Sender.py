@@ -6,42 +6,36 @@ from Lib.Conf import VICON
 import socket
 from threading import Event
 import serial
+from time import perf_counter
 
-HIGH = 255
+HIGH = 1
 LOW = 0
+
 
 def timeNow():
     timenow = datetime.datetime.now().time().strftime("%H:%M:%S.%f")
     return timenow
 
 
-class TTLSender(QThread):
-
-    run_output = pyqtSignal(int)
-    time = Event()
-
-    def __init__(self):
-        QThread.__init__(self)
-        self._isRunning = False
+class TTLSender():
 
     def setSerial(self, ser: serial.Serial):
         self.ser = ser
 
-    def run(self) -> None:
+    def send(self) -> None:
         # send the information we want to send
         # to start, we need A rising edge (or positive edge) is the low-to-high transition
 
         print("sending ttl at: " + timeNow())
-        self.ser.write(HIGH)
-        self.time.wait(100. / 1000)
         self.ser.write(LOW)
-        self.playNotification()
+        self.ser.write(HIGH)
+        t1 = perf_counter()
+        while perf_counter() - t1 < (1.):
+            None
+        self.ser.write(LOW)
+        self.ser.write(HIGH)
 
-    def stop(self):
-        self._isRunning = False
-        self.time.set()
-        self.time.clear()
-        self.run_output.emit(0)
+
 
 
 class SendReadUDP(QThread):
