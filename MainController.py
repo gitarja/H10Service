@@ -88,7 +88,7 @@ class MainController:
             self.view.startStopButton.setText("Stop")
             self.view.startStopButton.setEnabled(True)
             self.recording_status = 2
-        elif status == RECORDING_STATUS.READY or status == RECORDING_STATUS.INITIALIZED:
+        elif status == RECORDING_STATUS.READY:
             self.view.startStopButton.setText("Start Recording")
             self.view.startStopButton.setEnabled(True)
             self.recording_status = 1
@@ -97,7 +97,7 @@ class MainController:
             self.view.startStopButton.setEnabled(True)
             self.recording_status = 0
 
-    def playNotification():
+    def playNotification(self):
         BuzzerPin = 23
 
         GPIO.setwarnings(False)
