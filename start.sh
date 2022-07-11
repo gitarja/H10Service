@@ -1,3 +1,8 @@
 #! /bin/sh
 
-python main.py
+if sudo bluetoothctl -- trust dd:4e:fa:3f:78:00; then
+
+	if sudo bluetoothctl -- connect dd:4e:fa:3f:78:00; then
+		sudo python main.py
+	fi
+fi
