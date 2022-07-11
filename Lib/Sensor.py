@@ -100,6 +100,7 @@ class SensorClient(QObject):
         self.client = None
         self.hr_service = None
         self.hr_notification = None
+        self.sensor = None
         self.ENABLE_NOTIFICATION = QByteArray.fromHex(b"0100")
         self.DISABLE_NOTIFICATION = QByteArray.fromHex(b"0000")
         self.HR_SERVICE = QBluetoothUuid.HeartRate
@@ -189,6 +190,7 @@ class SensorClient(QObject):
             self.hr_service.deleteLater()
         except Exception as e:
             self.status_update.emit(f"Couldn't remove service: {e}")
+            self.recording_status.emit(RECORDING_STATUS.FAILED_TO_CONNECT)
         finally:
             self.hr_service = None
             self.hr_notification = None
@@ -199,11 +201,13 @@ class SensorClient(QObject):
             self.client.deleteLater()
         except Exception as e:
             self.status_update.emit(f"Couldn't remove client: {e}")
+            self.recording_status.emit(RECORDING_STATUS.FAILED_TO_CONNECT)
         finally:
             self.client = None
 
     def _catch_error(self, error):
         self.status_update.emit(f"An error occurred: {error}. Disconnecting sensor.")
+        self.recording_status.emit(RECORDING_STATUS.FAILED_TO_CONNECT)
         self._reset_connection()
 
     def _data_handler(self, characteristic, data):    # characteristic is unused but mandatory argument
