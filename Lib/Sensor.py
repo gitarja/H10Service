@@ -76,6 +76,7 @@ class SensorScanner(QObject):
 
     def _handle_scan_error(self, error):
         self.status_update.emit("Error")
+        self.sensor_client.recording_status.emit(RECORDING_STATUS.FAILED_TO_CONNECT)
 
 
 class SensorClient(QObject):

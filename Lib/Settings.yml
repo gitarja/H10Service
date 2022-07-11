@@ -17,3 +17,6 @@ RECORDING:
 
 TTL:
   PORT: "/dev/ttyUSB0"
+
+BUZZER:
+  PIN: 23

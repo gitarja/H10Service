@@ -26,7 +26,7 @@ class TTLSender():
         # send the information we want to send
         # to start, we need A rising edge (or positive edge) is the low-to-high transition
 
-        print("sending ttl at: " + timeNow())
+        print("Sending ttl at: " + timeNow())
         self.ser.write(LOW)
         self.ser.write(HIGH)
         t1 = perf_counter()
@@ -56,7 +56,7 @@ class SendReadUDP(QThread):
         self.sock.setblocking(0)
         while True:
             try:
-                # Attempt to receive up to 1024 bytes of data
+                # Attempt to receive up to 300 bytes of data
                 data, addr = self.sock.recvfrom(300)
                 # print(data)
                 # Echo the data back to the sender

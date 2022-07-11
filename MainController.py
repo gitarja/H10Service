@@ -2,7 +2,7 @@ from PyQt5 import QtCore, QtWidgets
 import sys
 from MainUI import Ui_MainWindow
 from Lib.Sensor import SensorScanner
-from Lib.Conf import RECORDING_STATUS, TTL
+from Lib.Conf import RECORDING_STATUS, TTL, BUZZER
 from Lib.Sender import SendReadUDP, TTLSender
 import serial
 from PyQt5.QtCore import QThread
@@ -87,25 +87,26 @@ class MainController:
             self.view.startStopButton.setEnabled(False)
         elif status == RECORDING_STATUS.RECORDING:
             self.view.startStopButton.setText("Stop")
+            self.view.startStopButton.setStyle("background-color: red")
             self.view.startStopButton.setEnabled(True)
             self.recording_status = 2
         elif status == RECORDING_STATUS.READY or status == RECORDING_STATUS.INITIALIZED:
-            self.view.startStopButton.setText("Start Recording")
+            self.view.startStopButton.setText("Ready")
+            self.view.startStopButton.setStyle("background-color: green")
             self.view.startStopButton.setEnabled(True)
             self.recording_status = 1
         else:
             self.view.startStopButton.setText("Start")
+            self.view.startStopButton.setStyle("background-color: blue")
             self.view.startStopButton.setEnabled(True)
             self.recording_status = 0
 
     def playNotification(self):
-        BuzzerPin = 23
 
         GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BCM)
-        GPIO.setup(BuzzerPin, GPIO.OUT, initial=GPIO.LOW)
+        GPIO.setup(BUZZER.PIN, GPIO.OUT, initial=GPIO.LOW)
 
-        GPIO.output(BuzzerPin, GPIO.HIGH)
+        GPIO.output(BUZZER.PIN, GPIO.HIGH)
         time.sleep(0.5)
-        print("Beep")
-        GPIO.output(BuzzerPin, GPIO.LOW)
+        GPIO.output(BUZZER.PIN, GPIO.LOW)

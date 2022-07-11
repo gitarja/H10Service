@@ -31,3 +31,8 @@ class RECORDING:
 # TTL
 class TTL:
     PORT = settings["TTL"]["PORT"]
+
+
+# Buzzer
+class BUZZER:
+    PIN = settings["BUZZER"]["PIN"]
