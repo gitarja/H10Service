@@ -12,7 +12,7 @@ RECORDING_STATUS:
   INITIALIZED: 3
 
 RECORDING:
-  PATH: "C:\\Users\\human-01\\results\\"
+  PATH: "/home/human/results/"
 
 
 TTL:
