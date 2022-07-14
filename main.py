@@ -1,5 +1,5 @@
 from MainController import MainController
-
+import argparse
 import sys
 
 # class Application(QCoreApplication):
@@ -13,5 +13,8 @@ import sys
 
 
 if __name__ == '__main__':
-  mainController = MainController()
+  parser = argparse.ArgumentParser()
+  parser.add_argument('--ttl', dest='activate ttl sender', type=str, choices=('True','False'))
+  args = parser.parse_args()
+  mainController = MainController(args.ttl == "True")
   sys.exit(mainController.run())

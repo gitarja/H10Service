@@ -11,11 +11,12 @@ import time
 
 class MainController:
 
-    def __init__(self):
+    def __init__(self, is_ttl: bool = False):
         self.app = QtWidgets.QApplication(sys.argv)
         self.view = Ui_MainWindow()
         self.scanner = SensorScanner()
         self._recording_status = 0
+        self.is_ttl = is_ttl
 
         # controller
         self.view.startStopButton.clicked.connect(self.startStopRecording)
@@ -31,18 +32,18 @@ class MainController:
         self.udp_send_read.is_started.connect(self.startStopRecording)
         self.udp_send_read.start(priority=QThread.HighestPriority)
 
-        # ttl sender
-
-        self.ttl_sender = TTLSender()
-        # set serial for TTL sender
-        self.ser = serial.Serial(
-            port=TTL.PORT,  # please make sure the port name is correct
-            baudrate=115200,  # maximum baud rate 115200
-            bytesize=serial.EIGHTBITS,  # set this to the amount of data you want to send
-            stopbits=serial.STOPBITS_ONE,
-            timeout=0
-        )
-        self.ttl_sender.setSerial(self.ser)
+        if self.is_ttl:
+            # ttl sender
+            self.ttl_sender = TTLSender()
+            # set serial for TTL sender
+            self.ser = serial.Serial(
+                port=TTL.PORT,  # please make sure the port name is correct
+                baudrate=115200,  # maximum baud rate 115200
+                bytesize=serial.EIGHTBITS,  # set this to the amount of data you want to send
+                stopbits=serial.STOPBITS_ONE,
+                timeout=0
+            )
+            self.ttl_sender.setSerial(self.ser)
 
 
     @property
@@ -67,9 +68,9 @@ class MainController:
     def startStopRecording(self):
 
         if self.recording_status == 1:
-            self.ttl_sender.send()  # send ttl
+            if self.is_ttl:
+                self.ttl_sender.send()  # send ttl
             self.scanner.startRecording()
-            
             self.playNotification()
 
         elif self.recording_status == 2:
