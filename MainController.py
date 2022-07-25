@@ -11,21 +11,26 @@ import time
 
 class MainController:
 
-    def __init__(self, is_ttl: bool = False):
+    def __init__(self, is_ttl: bool = False, is_ECG: bool = False):
         self.app = QtWidgets.QApplication(sys.argv)
         self.view = Ui_MainWindow()
         self.scanner = SensorScanner()
-        self._recording_status = 0
-        self.is_ttl = is_ttl
 
-        # controller
+        self.is_ttl = is_ttl
+        self.is_ECG = is_ECG
+
+        # set recording status: 0
+        self._recording_status = RECORDING_STATUS.READY
+
+
+        # view controller
         self.view.startStopButton.clicked.connect(self.startStopRecording)
 
-        self.scanner.status_update.connect(self.showStatus)
-
-        self.scanner.sensor_client.recording_status.connect(self.updateRecordingStatus)
-
-        self.scanner.sensor_client.status_update.connect(self.showStatus)
+        # ECG
+        if self.is_ECG:
+            self.scanner.status_update.connect(self.showStatus)
+            self.scanner.sensor_client.recording_status.connect(self.updateRecordingStatus)
+            self.scanner.sensor_client.status_update.connect(self.showStatus)
 
         # vicon
         self.udp_send_read = SendReadUDP()
@@ -70,14 +75,18 @@ class MainController:
         if self.recording_status == 1:
             if self.is_ttl:
                 self.ttl_sender.send()  # send ttl
-            self.scanner.startRecording()
+            if self.is_ECG:
+                self.scanner.startRecording()
             self.playNotification()
 
         elif self.recording_status == 2:
-            self.scanner.stopRecording()
+            if self.is_ECG:
+                self.scanner.stopRecording()
             self.playNotification()
         else:
-            self.scanner.scan()
+            if self.is_ECG:
+                self.scanner.scan()
+            pass
 
     def showStatus(self, msg):
         self.view.statusbar.showMessage(msg)
@@ -90,17 +99,17 @@ class MainController:
             self.view.startStopButton.setText("Stop")
             self.view.startStopButton.setStyleSheet("background-color: red")
             self.view.startStopButton.setEnabled(True)
-            self.recording_status = 2
+            self.recording_status = RECORDING_STATUS.FAILED_TO_CONNECT
         elif status == RECORDING_STATUS.READY or status == RECORDING_STATUS.INITIALIZED:
             self.view.startStopButton.setText("Ready")
             self.view.startStopButton.setStyleSheet("background-color: green")
             self.view.startStopButton.setEnabled(False)
-            self.recording_status = 1
+            self.recording_status = RECORDING_STATUS.RECORDING
         else:
             self.view.startStopButton.setText("Start")
             self.view.startStopButton.setStyleSheet("background-color: blue")
             self.view.startStopButton.setEnabled(True)
-            self.recording_status = 0
+            self.recording_status = RECORDING_STATUS.READY
 
     def playNotification(self):
 

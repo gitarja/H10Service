@@ -15,6 +15,7 @@ import sys
 if __name__ == '__main__':
   parser = argparse.ArgumentParser()
   parser.add_argument('--ttl', dest='activate ttl sender', type=str, choices=('True','False'))
+  parser.add_argument('--ECG', dest='activate ECG sender', type=str, choices=('True', 'False'))
   args = parser.parse_args()
-  mainController = MainController(args.ttl == "True")
+  mainController = MainController(args.ttl == "True", args.TTL == "True")
   sys.exit(mainController.run())
