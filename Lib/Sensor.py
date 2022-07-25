@@ -56,7 +56,7 @@ class SensorScanner(QObject):
 
     def stopRecording(self):
         self.status_update.emit("Recording complete")
-        self.sensor_client.recording_status.emit(ECG.STATUS.INITIALIZED)
+        self.sensor_client.recording_status.emit(ECG.STATUS.STOP)
         self.sensor_client.start_recording = False
 
 

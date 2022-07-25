@@ -5,7 +5,7 @@ VICON:
   UDP_PORT: 49147  # port assigned in NEXUS Recording
   STATUS:
     READY: 0
-    RECORDING: 1
+    START: 1
     STOP: 2
 
 ECG:

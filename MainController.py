@@ -81,9 +81,11 @@ class MainController:
         self._vicon_status = value
         
         
-    def updateVicon(self, value):             
-        if value == VICON.STATUS.READY or value == VICON.STATUS.RECORDING:
+    def updateVicon(self, value):
+        if value == VICON.STATUS.START or value == VICON.STATUS.STOP:
+            self.vicon_status = value
             self.startStopRecording()
+            
         if value == VICON.STATUS.STOP:
             self.vicon_status = VICON.STATUS.READY
         self.updateRecordingStatus()
@@ -99,7 +101,7 @@ class MainController:
         TTL sender is
         '''
        
-        if self.vicon_status == VICON.STATUS.READY:
+        if self.vicon_status == VICON.STATUS.START:
             # a controll for ECG mode only
             if self.is_ECG and self.is_ttl:
                 self.scanner.startRecording()
@@ -112,7 +114,7 @@ class MainController:
                 self.ttl_sender.send()
                 self.playNotification()
 
-        elif self.vicon_status == VICON.STATUS.RECORDING:
+        elif self.vicon_status == VICON.STATUS.STOP:
             if self.is_ECG and self.is_ttl:
                 self.scanner.stopRecording()
                 self.ttl_sender.send()
@@ -137,8 +139,8 @@ class MainController:
             if self.ecg_status== ECG.STATUS.SEARCHING_SENSORS:
                 self.view.startStopButton.setEnabled(False)
             elif self.ecg_status == ECG.STATUS.RECORDING:
-                self.view.startStopButton.setText("Stop")
-                self.view.startStopButton.setStyleSheet("background-color: red")
+                self.view.startStopButton.setText("Recording")
+                self.view.startStopButton.setStyleSheet("background-color: yellow")
                 self.view.startStopButton.setEnabled(False)
 
             elif (self.ecg_status == ECG.STATUS.READY):
@@ -155,9 +157,9 @@ class MainController:
                 self.view.startStopButton.setText("Ready")
                 self.view.startStopButton.setStyleSheet("background-color: green")
                 self.view.startStopButton.setEnabled(False)
-            if self.vicon_status == VICON.STATUS.RECORDING:
-                self.view.startStopButton.setText("Stop")
-                self.view.startStopButton.setStyleSheet("background-color: red")
+            if self.vicon_status == VICON.STATUS.START:
+                self.view.startStopButton.setText("Recording")
+                self.view.startStopButton.setStyleSheet("background-color: yellow")
                 self.view.startStopButton.setEnabled(False)
 
 

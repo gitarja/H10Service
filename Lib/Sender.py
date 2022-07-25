@@ -61,7 +61,7 @@ class SendReadUDP(QThread):
                 # Echo the data back to the sender
                 if "CaptureStart" in data.decode("utf-8") and not self.capture_start:
                     print("Nexus is started at: " + timeNow())
-                    self.is_started.emit(VICON.STATUS.RECORDING)
+                    self.is_started.emit(VICON.STATUS.START)
                     self.capture_start = True
                     # break
                 elif "CaptureStop" in data.decode("utf-8") and self.capture_start:

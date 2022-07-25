@@ -14,8 +14,8 @@ class VICON:
     UDP_IP = settings["VICON"]["UDP_IP"]  # address to send UDP, assigned in NEXUS Recording
     UDP_PORT = settings["VICON"]["UDP_PORT"]  # port assigned in NEXUS Recording
     class STATUS:
+        START = settings["VICON"]["STATUS"]["START"]
         READY = settings["VICON"]["STATUS"]["READY"]
-        RECORDING = settings["VICON"]["STATUS"]["RECORDING"]
         STOP = settings["VICON"]["STATUS"]["STOP"]
 
 
