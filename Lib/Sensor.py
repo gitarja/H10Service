@@ -6,7 +6,7 @@ from PyQt5.QtBluetooth import (QBluetoothDeviceDiscoveryAgent,
 from Lib.Logger import Logger
 from math import ceil
 from datetime import datetime
-from Lib.Conf import RECORDING_STATUS, RECORDING
+from Lib.Conf import ECG
 
 
 def currentDateTime()-> str:
@@ -44,7 +44,7 @@ class SensorScanner(QObject):
 
             return
         self.status_update.emit("Searching for sensors (this might take a while).")
-        self.sensor_client.recording_status.emit(RECORDING_STATUS.SEARCHING_SENSORS)
+        self.sensor_client.recording_status.emit(ECG.STATUS.SEARCHING_SENSORS)
         self.scanner.start()
 
 
@@ -56,7 +56,7 @@ class SensorScanner(QObject):
 
     def stopRecording(self):
         self.status_update.emit("Recording complete")
-        self.sensor_client.recording_status.emit(RECORDING_STATUS.INITIALIZED)
+        self.sensor_client.recording_status.emit(ECG.STATUS.INITIALIZED)
         self.sensor_client.start_recording = False
 
 
@@ -65,18 +65,18 @@ class SensorScanner(QObject):
                          if "Polar" in str(d.name())]    # TODO: comment why rssi needs to be negative
         if not polar_sensors:
             self.status_update.emit("Couldn't find sensors.")
-            self.sensor_client.recording_status.emit(RECORDING_STATUS.FAILED_TO_CONNECT)
+            self.sensor_client.recording_status.emit(ECG.STATUS.FAILED_TO_CONNECT)
 
             return
         self.sensor = polar_sensors[0] # take the first sensor
         self.status_update.emit("Sensor is ready")
-        self.sensor_client.recording_status.emit(RECORDING_STATUS.READY)
+        self.sensor_client.recording_status.emit(ECG.STATUS.READY)
         self.sensor_client.connect_client(self.sensor)
 
 
     def _handle_scan_error(self, error):
         self.status_update.emit("Error")
-        self.sensor_client.recording_status.emit(RECORDING_STATUS.FAILED_TO_CONNECT)
+        self.sensor_client.recording_status.emit(ECG.STATUS.FAILED_TO_CONNECT)
 
 
 class SensorClient(QObject):
@@ -144,7 +144,7 @@ class SensorClient(QObject):
         hr_service = [s for s in self.client.services() if s.toUInt16()[0] == self.HR_SERVICE]
         if not hr_service:
             self.status_update.emit(f"Couldn't find HR service on {self._sensor_address()}.")
-            self.recording_status.emit(RECORDING_STATUS.FAILED_TO_CONNECT)
+            self.recording_status.emit(ECG.STATUS.FAILED_TO_CONNECT)
             return
         self.hr_service = self.client.createServiceObject(*hr_service)
         if not self.hr_service:
@@ -160,8 +160,8 @@ class SensorClient(QObject):
 
     def startRecording(self):
         self.status_update.emit("Recording")
-        self.log.initializeLog(RECORDING.PATH + str(currentDateTime()) + ".csv")
-        self.recording_status.emit(RECORDING_STATUS.RECORDING)
+        self.log.initializeLog(ECG.RECORDING_PATH + str(currentDateTime()) + ".csv")
+        self.recording_status.emit(ECG.STATUS.RECORDING)
         self.start_recording = True
 
 
@@ -190,7 +190,7 @@ class SensorClient(QObject):
             self.hr_service.deleteLater()
         except Exception as e:
             self.status_update.emit(f"Couldn't remove service: {e}")
-            self.recording_status.emit(RECORDING_STATUS.FAILED_TO_CONNECT)
+            self.recording_status.emit(ECG.STATUS.FAILED_TO_CONNECT)
         finally:
             self.hr_service = None
             self.hr_notification = None
@@ -201,13 +201,13 @@ class SensorClient(QObject):
             self.client.deleteLater()
         except Exception as e:
             self.status_update.emit(f"Couldn't remove client: {e}")
-            self.recording_status.emit(RECORDING_STATUS.FAILED_TO_CONNECT)
+            self.recording_status.emit(ECG.STATUS.FAILED_TO_CONNECT)
         finally:
             self.client = None
 
     def _catch_error(self, error):
         self.status_update.emit(f"An error occurred: {error}. Disconnecting sensor.")
-        self.recording_status.emit(RECORDING_STATUS.FAILED_TO_CONNECT)
+        self.recording_status.emit(ECG.STATUS.FAILED_TO_CONNECT)
         self._reset_connection()
 
     def _data_handler(self, characteristic, data):    # characteristic is unused but mandatory argument

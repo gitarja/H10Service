@@ -13,20 +13,20 @@ class VICON:
     TRIAL_NAME = settings["VICON"]["TRIAL_NAME"]
     UDP_IP = settings["VICON"]["UDP_IP"]  # address to send UDP, assigned in NEXUS Recording
     UDP_PORT = settings["VICON"]["UDP_PORT"]  # port assigned in NEXUS Recording
+    class STATUS:
+        READY = settings["VICON"]["STATUS"]["READY"]
+        RECORDING = settings["VICON"]["STATUS"]["RECORDING"]
 
 
-# Recording status
-class RECORDING_STATUS:
-    SEARCHING_SENSORS = settings["RECORDING_STATUS"]["SEARCHING_SENSORS"]
-    READY = settings["RECORDING_STATUS"]["READY"]
-    RECORDING = settings["RECORDING_STATUS"]["RECORDING"]
-    FAILED_TO_CONNECT = settings["RECORDING_STATUS"]["FAILED_TO_CONNECT"]
-    INITIALIZED = settings["RECORDING_STATUS"]["INITIALIZED"]
-
-# Recording
-class RECORDING:
-    PATH = settings["RECORDING"]["PATH"]
-
+# ECG status
+class ECG:
+    RECORDING_PATH = settings["ECG"]["RECORDNING_PATH"]
+    class STATUS:
+        SEARCHING_SENSORS = settings["ECG"]["STATUS"]["SEARCHING_SENSORS"]
+        READY = settings["ECG"]["STATUS"]["READY"]
+        RECORDING = settings["ECG"]["STATUS"]["RECORDING"]
+        FAILED_TO_CONNECT = settings["ECG"]["STATUS"]["FAILED_TO_CONNECT"]
+        INITIALIZED = settings["ECG"]["STATUS"]["INITIALIZED"]
 
 # TTL
 class TTL:

@@ -1,10 +1,9 @@
 import time
 from PyQt5.QtCore import QThread, pyqtSignal
 import datetime
-from Lib.Conf import VICON
-
 import socket
-from threading import Event
+from PyQt5.QtCore import QObject
+from Lib.Conf import VICON
 import serial
 from time import perf_counter
 
@@ -17,7 +16,7 @@ def timeNow():
     return timenow
 
 
-class TTLSender():
+class TTLSender(QObject):
 
     def setSerial(self, ser: serial.Serial):
         self.ser = ser
@@ -62,12 +61,12 @@ class SendReadUDP(QThread):
                 # Echo the data back to the sender
                 if "CaptureStart" in data.decode("utf-8") and not self.capture_start:
                     print("Nexus is started at: " + timeNow())
-                    self.is_started.emit(1)
+                    self.is_started.emit(VICON.STATUS.RECORDING)
                     self.capture_start = True
                     # break
                 elif "CaptureStop" in data.decode("utf-8") and self.capture_start:
                     print("Nexus is stop at: " + timeNow())
-                    self.is_started.emit(1)
+                    self.is_started.emit(VICON.STATUS.READY)
                     self.capture_start = False
 
             except socket.error:
