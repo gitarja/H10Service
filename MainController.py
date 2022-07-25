@@ -20,7 +20,10 @@ class MainController:
         self.is_ECG = is_ECG
 
         # set recording status: 0
-        self._recording_status = RECORDING_STATUS.READY
+        self._recording_status = RECORDING_STATUS.SEARCHING_SENSORS
+        if not self.is_ECG:
+            self._recording_status = RECORDING_STATUS.READY
+            self.updateRecordingStatus(self._recording_status)
 
 
         # view controller
@@ -71,18 +74,24 @@ class MainController:
         return self.app.exec_()
 
     def startStopRecording(self):
-
+        print(self.recording_status)
+        print(self.is_ttl)
         if self.recording_status == RECORDING_STATUS.READY:
             if self.is_ttl:
                 self.ttl_sender.send()  # send ttl
+                if not self.is_ECG:                    
+                    self.recording_status = RECORDING_STATUS.RECORDING
+                    self.updateRecordingStatus(self.recording_status )
+                    
+                    
             if self.is_ECG:
                 self.scanner.startRecording()
-                self.playNotification()
+            self.playNotification()
 
         elif self.recording_status == RECORDING_STATUS.RECORDING:
             if self.is_ECG:
                 self.scanner.stopRecording()
-                self.playNotification()
+            self.playNotification()
         else:
             if self.is_ECG:
                 self.scanner.scan()
