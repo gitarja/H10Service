@@ -72,17 +72,17 @@ class MainController:
 
     def startStopRecording(self):
 
-        if self.recording_status == 1:
+        if self.recording_status == RECORDING_STATUS.READY:
             if self.is_ttl:
                 self.ttl_sender.send()  # send ttl
             if self.is_ECG:
                 self.scanner.startRecording()
-            self.playNotification()
+                self.playNotification()
 
-        elif self.recording_status == 2:
+        elif self.recording_status == RECORDING_STATUS.RECORDING:
             if self.is_ECG:
                 self.scanner.stopRecording()
-            self.playNotification()
+                self.playNotification()
         else:
             if self.is_ECG:
                 self.scanner.scan()
