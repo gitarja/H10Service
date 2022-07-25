@@ -1,4 +1,2 @@
 #! /bin/sh
-sudo python main.py --ECG false
-
-
+sudo python main.py --ECG False --ttl True
