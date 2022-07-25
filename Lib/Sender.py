@@ -66,7 +66,7 @@ class SendReadUDP(QThread):
                     # break
                 elif "CaptureStop" in data.decode("utf-8") and self.capture_start:
                     print("Nexus is stop at: " + timeNow())
-                    self.is_started.emit(VICON.STATUS.READY)
+                    self.is_started.emit(VICON.STATUS.STOP)
                     self.capture_start = False
 
             except socket.error:
