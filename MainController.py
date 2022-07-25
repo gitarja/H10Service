@@ -64,8 +64,6 @@ class MainController:
     def updateECG(self, value):
         if value == ECG.STATUS.FAILED_TO_CONNECT:
             self.scanner.scan()
-        elif value == ECG.STATUS.READY or value == ECG.STATUS.RECORDING:
-            self.startStopRecording()
         self.ecg_status = value
         if value == ECG.STATUS.STOP:
                 self.ecg_status = ECG.STATUS.READY
@@ -113,7 +111,6 @@ class MainController:
             else:
                 self.ttl_sender.send()
                 self.playNotification()
-
 
         elif self.vicon_status == VICON.STATUS.RECORDING:
             if self.is_ECG and self.is_ttl:
