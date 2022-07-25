@@ -14,7 +14,7 @@ class MainController:
     def __init__(self, is_ttl: bool = False, is_ECG: bool = False):
         self.app = QtWidgets.QApplication(sys.argv)
         self.view = Ui_MainWindow()
-        self.scanner = SensorScanner()
+
 
         self.is_ttl = is_ttl
         self.is_ECG = is_ECG
@@ -29,6 +29,7 @@ class MainController:
 
         # ECG
         if self.is_ECG:
+            self.scanner = SensorScanner()
             self.scanner.status_update.connect(self.showStatus)
             self.scanner.sensor_client.recording_status.connect(self.updateECG)
             self.scanner.sensor_client.status_update.connect(self.showStatus)

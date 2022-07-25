@@ -1,2 +1,6 @@
 **/__pycache__/
 .idea/
+Lib/Settings.yml
+start_ecg_only.sh
+start_full.sh
+start_ttl_only.sh
