@@ -16,6 +16,7 @@ class VICON:
     class STATUS:
         READY = settings["VICON"]["STATUS"]["READY"]
         RECORDING = settings["VICON"]["STATUS"]["RECORDING"]
+        STOP = settings["VICON"]["STATUS"]["STOP"]
 
 
 # ECG status
@@ -26,7 +27,7 @@ class ECG:
         READY = settings["ECG"]["STATUS"]["READY"]
         RECORDING = settings["ECG"]["STATUS"]["RECORDING"]
         FAILED_TO_CONNECT = settings["ECG"]["STATUS"]["FAILED_TO_CONNECT"]
-        INITIALIZED = settings["ECG"]["STATUS"]["INITIALIZED"]
+        STOP = settings["ECG"]["STATUS"]["STOP"]
 
 # TTL
 class TTL:

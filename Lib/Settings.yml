@@ -6,15 +6,16 @@ VICON:
   STATUS:
     READY: 0
     RECORDING: 1
+    STOP: 2
 
 ECG:
   RECORDNING_PATH: "/home/human/results/"
   STATUS:
+    FAILED_TO_CONNECT: -2
     SEARCHING_SENSORS: -1
     READY: 0
     RECORDING: 1
-    FAILED_TO_CONNECT: 2
-    INITIALIZED: 3
+    STOP: 2
 
 TTL:
   PORT: "/dev/ttyUSB0"

@@ -64,11 +64,10 @@ class MainController:
     def updateECG(self, value):
         if value == ECG.STATUS.FAILED_TO_CONNECT:
             self.scanner.scan()
-        elif value == ECG.STATUS.READY:
+        elif value == ECG.STATUS.READY or value == ECG.STATUS.RECORDING:
             self.startStopRecording()
-        
         self.ecg_status = value
-        if value == ECG.STATUS.INITIALIZED:
+        if value == ECG.STATUS.STOP:
                 self.ecg_status = ECG.STATUS.READY
         self.updateRecordingStatus()
         
@@ -85,8 +84,10 @@ class MainController:
         
         
     def updateVicon(self, value):             
-        self.vicon_status = value
-        self.startStopRecording()  
+        if value == VICON.STATUS.READY or value == VICON.STATUS.RECORDING:
+            self.startStopRecording()
+        if value == VICON.STATUS.STOP:
+            self.vicon_status = VICON.STATUS.READY
         self.updateRecordingStatus()
         
 
@@ -101,20 +102,29 @@ class MainController:
         '''
        
         if self.vicon_status == VICON.STATUS.READY:
-            # a controll for ttl mode only
-            if self.is_ttl and not self.is_ECG:
-                self.ttl_sender.send()  # send ttl
-                self.playNotification()
             # a controll for ECG mode only
-            if self.is_ECG and (self.ecg_status == ECG.STATUS.READY):
+            if self.is_ECG and self.is_ttl:
+                self.scanner.startRecording()
+                self.ttl_sender.send()
+                self.playNotification()
+            elif self.is_ECG and not self.is_ttl:
                 self.scanner.startRecording()
                 self.playNotification()
+            else:
+                self.ttl_sender.send()
+                self.playNotification()
+
+
         elif self.vicon_status == VICON.STATUS.RECORDING:
-            if self.is_ECG and (self.ecg_status == ECG.STATUS.RECORDING):
+            if self.is_ECG and self.is_ttl:
+                self.scanner.stopRecording()
+                self.ttl_sender.send()
+                self.playNotification()
+            elif self.is_ECG and not self.is_ttl:
                 self.scanner.stopRecording()
                 self.playNotification()
-            if self.is_ttl:
-                self.ttl_sender.send()  # send ttl
+            else:
+                self.ttl_sender.send()
                 self.playNotification()
 
      
@@ -134,7 +144,7 @@ class MainController:
                 self.view.startStopButton.setStyleSheet("background-color: red")
                 self.view.startStopButton.setEnabled(False)
 
-            elif (self.ecg_status == ECG.STATUS.READY) or (self.ecg_status == ECG.STATUS.INITIALIZED):
+            elif (self.ecg_status == ECG.STATUS.READY):
                 self.view.startStopButton.setText("Ready")
                 self.view.startStopButton.setStyleSheet("background-color: green")
                 self.view.startStopButton.setEnabled(False)
