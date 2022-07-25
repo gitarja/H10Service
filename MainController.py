@@ -104,8 +104,8 @@ class MainController:
         if self.vicon_status == VICON.STATUS.START:
             # a controll for ECG mode only
             if self.is_ECG and self.is_ttl:
-                self.scanner.startRecording()
                 self.ttl_sender.send()
+                self.scanner.startRecording()                
                 self.playNotification()
             elif self.is_ECG and not self.is_ttl:
                 self.scanner.startRecording()
@@ -116,8 +116,8 @@ class MainController:
 
         elif self.vicon_status == VICON.STATUS.STOP:
             if self.is_ECG and self.is_ttl:
-                self.scanner.stopRecording()
                 self.ttl_sender.send()
+                self.scanner.stopRecording()                
                 self.playNotification()
             elif self.is_ECG and not self.is_ttl:
                 self.scanner.stopRecording()
