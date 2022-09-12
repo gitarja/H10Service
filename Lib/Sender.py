@@ -35,9 +35,53 @@ class TTLSender(QObject):
         self.ser.write(HIGH)
 
 
+class UDPSender(object):
+
+    def __init__(self):
+        print("Init socket binding")
+        self.sock = socket.socket(socket.AF_INET,  # Internet
+                                  socket.SOCK_DGRAM)  # UDP
+        self.packet_ID = 0
+
+    def send(self, trial_name, database_path, start=True):
+        self.packet_ID += 1
+        #### get current time in format HHMMSS
+        timenow = datetime.datetime.now().time().strftime("%H%M%S")
+        #### simple message, please note the variables. Using the current time allows
+        #### having unique ID for the trial. If the recording exist with the current
+        #### file name, the recording won't start unless in Nexus the "Permit overwrite
+        #### existing files" is ticked.
+        if start:
+            test_message = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>" \
+                           "<CaptureStart>" \
+                           "<Name VALUE=\"" + trial_name + "\"/>" \
+                                                                                     "<Notes VALUE=\"\"/>" \
+                                                                                     "<Description VALUE=\"\"/>" \
+                                                                                     "<DatabasePath VALUE=\""+VICON.DATABASE_PATH+"\"/>" \
+                                                                                     "<Delay VALUE = \"-20\"/>" \
+                                                                                     "<PacketID VALUE=\"" + str(
+                self.packet_ID) + "\"/>" \
+                             "</CaptureStart>"
+        else:
+            test_message = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>" \
+                           "<CaptureStop RESULT=\"SUCCESS\">" \
+                           "<Name VALUE=\"" + trial_name + "\"/>" \
+                                                                                     "<Notes VALUE=\"\"/>" \
+                                                                                     "<Description VALUE=\"\"/>" \
+                                                                                     "<DatabasePath VALUE=\""+VICON.DATABASE_PATH+"\"/>" \
+                                                                                     "<Delay VALUE = \"-20\"/>" \
+                                                                                     "<PacketID VALUE=\"" + str(
+                self.packet_ID) + "\"/>" \
+                                  "</CaptureStop>"
+
+        try:
+            self.sock.sendto(test_message.encode(), (VICON.UDP_IP, VICON.UDP_PORT))
+        except socket.error:
+            print("Cannot send UDP message to Nexus")
+            raise
 
 
-class SendReadUDP(QThread):
+class UDPReceiver(QThread):
     is_started = pyqtSignal(int)
     capture_start = False
 

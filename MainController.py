@@ -3,7 +3,7 @@ import sys
 from MainUI import Ui_MainWindow
 from Lib.Sensor import SensorScanner
 from Lib.Conf import ECG, TTL, BUZZER, VICON
-from Lib.Sender import SendReadUDP, TTLSender
+from Lib.Sender import UDPReceiver, TTLSender
 import serial
 from PyQt5.QtCore import QThread
 import RPi.GPIO as GPIO
@@ -14,7 +14,7 @@ class MainController:
     def __init__(self, is_ttl: bool = False, is_ECG: bool = False):
         self.app = QtWidgets.QApplication(sys.argv)
         self.view = Ui_MainWindow()
-
+        self.scanner = SensorScanner()
 
         self.is_ttl = is_ttl
         self.is_ECG = is_ECG
@@ -29,13 +29,12 @@ class MainController:
 
         # ECG
         if self.is_ECG:
-            self.scanner = SensorScanner()
             self.scanner.status_update.connect(self.showStatus)
             self.scanner.sensor_client.recording_status.connect(self.updateECG)
             self.scanner.sensor_client.status_update.connect(self.showStatus)
 
         # vicon
-        self.udp_send_read = SendReadUDP()
+        self.udp_send_read = UDPReceiver()
         self.udp_send_read.is_started.connect(self.updateVicon)
         self.udp_send_read.start(priority=QThread.HighestPriority)
 
