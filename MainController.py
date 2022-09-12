@@ -3,11 +3,12 @@ import sys
 from MainUI import Ui_MainWindow
 from Lib.Sensor import SensorScanner
 from Lib.Conf import ECG, TTL, BUZZER, VICON
-from Lib.Sender import UDPReceiver, TTLSender
+from Lib.Sender import UDPSender, TTLSender
 import serial
 from PyQt5.QtCore import QThread
 import RPi.GPIO as GPIO
 import time
+import datetime
 
 class MainController:
 
@@ -34,9 +35,9 @@ class MainController:
             self.scanner.sensor_client.status_update.connect(self.showStatus)
 
         # vicon
-        self.udp_send_read = UDPReceiver()
-        self.udp_send_read.is_started.connect(self.updateVicon)
-        self.udp_send_read.start(priority=QThread.HighestPriority)
+        self.udp_send = UDPSender()
+        self.trial_name = None
+
 
         if self.is_ttl:
             # ttl sender
@@ -101,11 +102,17 @@ class MainController:
         TTL sender is
         '''
        
-        if self.vicon_status == VICON.STATUS.START:
-            # a controll for ECG mode only
+        if self.vicon_status == VICON.STATUS.READY:
+            # start vicon
+            timenow = datetime.datetime.now().time().strftime("%H%M%S")
+            self.trial_name = VICON.TRIAL_NAME + str(timenow)
+            self.udp_send.send(trial_name=self.trial_name, start=True)
+            self.vicon_status = VICON.STATUS.START
+
+            # start ECG and TTL
             if self.is_ECG and self.is_ttl:
                 self.ttl_sender.send()
-                self.scanner.startRecording()                
+                self.scanner.startRecording()
                 self.playNotification()
             elif self.is_ECG and not self.is_ttl:
                 self.scanner.startRecording()
@@ -113,11 +120,14 @@ class MainController:
             else:
                 self.ttl_sender.send()
                 self.playNotification()
-
-        elif self.vicon_status == VICON.STATUS.STOP:
+        elif self.vicon_status == VICON.STATUS.START:
+            # stop Vicon
+            self.udp_send.send(trial_name=self.trial_name, start=False)
+            self.vicon_status = VICON.STATUS.READY
+            # stop ECG and send TTL
             if self.is_ECG and self.is_ttl:
                 self.ttl_sender.send()
-                self.scanner.stopRecording()                
+                self.scanner.stopRecording()
                 self.playNotification()
             elif self.is_ECG and not self.is_ttl:
                 self.scanner.stopRecording()
@@ -125,6 +135,9 @@ class MainController:
             else:
                 self.ttl_sender.send()
                 self.playNotification()
+
+
+
 
      
 

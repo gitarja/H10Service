@@ -43,7 +43,7 @@ class UDPSender(object):
                                   socket.SOCK_DGRAM)  # UDP
         self.packet_ID = 0
 
-    def send(self, trial_name, database_path, start=True):
+    def send(self, trial_name, start=True):
         self.packet_ID += 1
         #### get current time in format HHMMSS
         timenow = datetime.datetime.now().time().strftime("%H%M%S")
