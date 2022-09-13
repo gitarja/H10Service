@@ -7,7 +7,7 @@ from Lib.Conf import VICON
 import serial
 from time import perf_counter
 
-HIGH = 1
+HIGH = b'1'
 LOW = 0
 
 
@@ -26,11 +26,11 @@ class TTLSender(QObject):
         if not ser.isOpen():
             ser.open()
         print("Sending ttl at: " + timeNow())
-        ser.write(LOW)
+        ser.write(HIGH)
         t1 = perf_counter()
         while perf_counter() - t1 < (200./1000):
             None
-        ser.write(LOW)
+        ser.write(HIGH)
 
         # close serial
         ser.close()
