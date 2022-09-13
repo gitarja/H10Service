@@ -18,26 +18,25 @@ def timeNow():
 
 class TTLSender(QObject):
 
-    def setSerial(self, ser: serial.Serial):
-        self.ser = ser
 
-    def send(self) -> None:
+
+    def send(self, ser) -> None:
         # send the information we want to send
         # to start, we need A rising edge (or positive edge) is the low-to-high transition
 
         print("Sending ttl at: " + timeNow())
-        self.ser.write(LOW)
-        self.ser.write(HIGH)
+        ser.write(LOW)
+        ser.write(HIGH)
         t1 = perf_counter()
         while perf_counter() - t1 < (100./1000):
             None
-        self.ser.write(LOW)
-        self.ser.write(HIGH)
+        ser.write(LOW)
+        ser.write(HIGH)
 
 
 
 
-class SendReadUDP(QThread):
+class UDPReceiver(QThread):
     is_started = pyqtSignal(int)
     capture_start = False
 
