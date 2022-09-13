@@ -49,8 +49,8 @@ class MainController:
                 baudrate=115200,  # maximum baud rate 115200
                 bytesize=serial.EIGHTBITS,  # set this to the amount of data you want to send
                 stopbits=serial.STOPBITS_ONE,
-                timeout=0
             )
+
 
 
 

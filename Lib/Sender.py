@@ -26,11 +26,11 @@ class TTLSender(QObject):
         if not ser.isOpen():
             ser.open()
         print("Sending ttl at: " + timeNow())
-        ser.write(HIGH)
+        ser.write(LOW)
         t1 = perf_counter()
-        while perf_counter() - t1 < (100./1000):
+        while perf_counter() - t1 < (200./1000):
             None
-        ser.write(HIGH)
+        ser.write(LOW)
 
         # close serial
         ser.close()
