@@ -23,7 +23,8 @@ class TTLSender(QObject):
     def send(self, ser) -> None:
         # send the information we want to send
         # to start, we need A rising edge (or positive edge) is the low-to-high transition
-
+        if not ser.isOpen():
+            ser.open()
         print("Sending ttl at: " + timeNow())
         ser.write(LOW)
         ser.write(HIGH)
@@ -32,6 +33,9 @@ class TTLSender(QObject):
             None
         ser.write(LOW)
         ser.write(HIGH)
+
+        # close serial
+        ser.close()
 
 
 

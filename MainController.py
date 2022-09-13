@@ -54,6 +54,7 @@ class MainController:
 
 
 
+
     @property
     def ecg_status(self):
         return self._ecg_status
@@ -102,9 +103,7 @@ class MainController:
             # a controll for ECG mode only
             if self.is_ECG and self.is_ttl:
                 # send ttl
-                self.ser.open()
                 self.ttl_sender.send(self.ser)
-                self.ser.close()
                 # start recording
                 self.scanner.startRecording()
                 self.playNotification()
@@ -113,18 +112,14 @@ class MainController:
                 self.playNotification()
             else:
                 # send ttl
-                self.ser.open()
                 self.ttl_sender.send(self.ser)
-                self.ser.close()
 
                 self.playNotification()
 
         elif self.vicon_status == VICON.STATUS.STOP:
             if self.is_ECG and self.is_ttl:
                 # send ttl
-                self.ser.open()
                 self.ttl_sender.send(self.ser)
-                self.ser.close()
                 self.scanner.stopRecording()
                 self.playNotification()
             elif self.is_ECG and not self.is_ttl:
@@ -132,9 +127,7 @@ class MainController:
                 self.playNotification()
             else:
                 # send ttl
-                self.ser.open()
                 self.ttl_sender.send(self.ser)
-                self.ser.close()
                 self.playNotification()
 
     def showStatus(self, msg):
