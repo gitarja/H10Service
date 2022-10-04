@@ -50,6 +50,7 @@ class SensorScanner(QObject):
 
     def startRecording(self):
         if self.sensor != None:
+            self.scan()
             self.sensor_client.startRecording()
         else:
             self.scan()
