@@ -7,7 +7,7 @@ from Lib.Conf import VICON
 import serial
 from time import perf_counter
 
-HIGH = b'1'
+HIGH = 1
 LOW = 0
 
 
