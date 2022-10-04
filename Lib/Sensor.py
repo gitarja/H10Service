@@ -40,7 +40,7 @@ class SensorScanner(QObject):
 
     def scan(self):
         if self.scanner.isActive():
-            self.status_update.emit("Sensor is active")
+            self.status_update.emit("Searching for sensors (this might take a while).")
 
             return
         self.status_update.emit("Searching for sensors (this might take a while).")
@@ -50,7 +50,6 @@ class SensorScanner(QObject):
 
     def startRecording(self):
         if self.sensor != None:
-            self.scan()
             self.sensor_client.startRecording()
         else:
             self.scan()
