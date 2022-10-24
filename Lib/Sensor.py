@@ -87,7 +87,7 @@ class SensorClient(QObject):
 
     In Qt terminology client=central, server=peripheral.
     """
-    ibi_update = pyqtSignal(float)
+    rr_status = pyqtSignal(bool)
     status_update = pyqtSignal(str)
     recording_status = pyqtSignal(int)
     start_recording = False
@@ -244,9 +244,8 @@ class SensorClient(QObject):
         uint8_format = (byte0 & 1) == 0
         energy_expenditure = ((byte0 >> 3) & 1) == 1
         rr_interval = ((byte0 >> 4) & 1) == 1
-        print(rr_interval)
         if not rr_interval:
-
+            self.recording_status.emit(ECG.STATUS.FAILED_TO_CONNECT)
             return
 
         first_rr_byte = 2
@@ -274,4 +273,4 @@ class SensorClient(QObject):
             # write rr into a csv file
             if self.start_recording:
                 self.log.write(ibi, record_time)
-            self.ibi_update.emit(ibi)
+

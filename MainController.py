@@ -34,7 +34,7 @@ class MainController:
             self.scanner.status_update.connect(self.showStatus)
             self.scanner.sensor_client.recording_status.connect(self.updateECG)
             self.scanner.sensor_client.status_update.connect(self.showStatus)
-            #self.scanner.sensor_client.ibi_update.connect()
+
 
         # vicon
         self.udp_send_read = UDPReceiver()
