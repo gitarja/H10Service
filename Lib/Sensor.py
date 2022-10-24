@@ -247,7 +247,7 @@ class SensorClient(QObject):
         rr_interval = ((byte0 >> 4) & 1) == 1
 
 
-        print(self.rr_count)
+        # print(self.rr_count)
         if not rr_interval:
             time.sleep(0.5)
             self.rr_count += 1
