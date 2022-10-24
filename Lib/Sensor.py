@@ -254,7 +254,7 @@ class SensorClient(QObject):
         if not rr_interval:
             time.sleep(0.5)
             self.rr_count += 1
-            if self.rr_count > 5: # if the program fails 5 times to fetch the RR
+            if self.rr_count > 7: # if the program fails 7 times to fetch the RR
                 self.recording_status.emit(ECG.STATUS.FAILED_TO_CONNECT)
             return
 
