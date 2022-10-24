@@ -106,6 +106,8 @@ class SensorClient(QObject):
         self.HR_SERVICE = QBluetoothUuid.HeartRate
         self.HR_CHARACTERISTIC = QBluetoothUuid.HeartRateMeasurement
 
+        self.rr_count = 0
+
     def _sensor_address(self):
         return self.client.remoteAddress().toString()
 
@@ -124,7 +126,7 @@ class SensorClient(QObject):
         # self.client.errorOccurred.connect(self._catch_error)
         self.client.connected.connect(self._discover_services)
         self.client.discoveryFinished.connect(self._connect_hr_service, Qt.QueuedConnection)
-        self.client.disconnected.connect(self.resetClient)
+        # self.client.disconnected.connect(self.resetClient)
         self.client.connectToDevice()
 
     def disconnect_client(self):
@@ -244,10 +246,17 @@ class SensorClient(QObject):
         uint8_format = (byte0 & 1) == 0
         energy_expenditure = ((byte0 >> 3) & 1) == 1
         rr_interval = ((byte0 >> 4) & 1) == 1
+
+
+
         if not rr_interval:
-            self.recording_status.emit(ECG.STATUS.FAILED_TO_CONNECT)
+            self.rr_count += 1
+
+            if self.rr_count > 3:
+                self.recording_status.emit(ECG.STATUS.FAILED_TO_CONNECT)
             return
 
+        self.rr_count = 0
         first_rr_byte = 2
         if uint8_format:
             # hr = data[1]
