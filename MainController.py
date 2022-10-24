@@ -66,8 +66,7 @@ class MainController:
         self._ecg_status = value
 
     def updateECG(self, value):
-        if (value == ECG.STATUS.FAILED_TO_CONNECT) & (self.ECG_recording==False):
-            self.scanner.sensor_client.resetClient()
+        if value == ECG.STATUS.FAILED_TO_CONNECT:
             self.scanner.scan()
         self.ecg_status = value
         if value == ECG.STATUS.STOP:
