@@ -19,6 +19,7 @@ class MainController:
 
         self.is_ttl = is_ttl
         self.is_ECG = is_ECG
+        self.ECG_recording = False
 
         # set status for Vicon and ECG
         self.ecg_status = ECG.STATUS.SEARCHING_SENSORS
@@ -65,7 +66,7 @@ class MainController:
         self._ecg_status = value
 
     def updateECG(self, value):
-        if value == ECG.STATUS.FAILED_TO_CONNECT:
+        if (value == ECG.STATUS.FAILED_TO_CONNECT) & (self.ECG_recording==False):
             self.scanner.sensor_client.resetClient()
             self.scanner.scan()
         self.ecg_status = value
@@ -142,19 +143,22 @@ class MainController:
         if self.is_ECG:
             if self.ecg_status == ECG.STATUS.SEARCHING_SENSORS:
                 self.view.startStopButton.setEnabled(False)
+                self.ECG_recording = False
             elif self.ecg_status == ECG.STATUS.RECORDING:
                 self.view.startStopButton.setText("Recording")
                 self.view.startStopButton.setStyleSheet("background-color: yellow")
                 self.view.startStopButton.setEnabled(False)
-
+                self.ECG_recording = True
             elif (self.ecg_status == ECG.STATUS.READY):
                 self.view.startStopButton.setText("Ready")
                 self.view.startStopButton.setStyleSheet("background-color: green")
                 self.view.startStopButton.setEnabled(False)
+                self.ECG_recording = False
             else:
                 self.view.startStopButton.setText("Start")
                 self.view.startStopButton.setStyleSheet("background-color: blue")
                 self.view.startStopButton.setEnabled(True)
+                self.ECG_recording = False
         else:
             # TTL mode
             if self.vicon_status == VICON.STATUS.READY:
