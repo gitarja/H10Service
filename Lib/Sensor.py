@@ -184,7 +184,7 @@ class SensorClient(QObject):
         self.hr_service.writeDescriptor(self.hr_notification, self.ENABLE_NOTIFICATION)
 
     def resetClient(self):
-        self.status_update.emit(f"Discarding sensor at {self._sensor_address()}.")
+        self.status_update.emit(f"Discarding sensor")
 
         self._remove_service()
         self._remove_client()
