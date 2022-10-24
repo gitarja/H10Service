@@ -1,3 +1,5 @@
+import time
+
 from PyQt5.QtCore import QObject, pyqtSignal, QByteArray, Qt, QTimer
 from PyQt5.QtBluetooth import (QBluetoothDeviceDiscoveryAgent,
                                  QLowEnergyController, QLowEnergyService,
@@ -251,7 +253,7 @@ class SensorClient(QObject):
 
         if not rr_interval:
             self.rr_count += 1
-
+            time.sleep(0.05)
             if self.rr_count > 5: # if the program fails 5 times to fetch the RR
                 self.recording_status.emit(ECG.STATUS.FAILED_TO_CONNECT)
             return
