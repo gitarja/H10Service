@@ -208,7 +208,7 @@ class SensorClient(QObject):
     def _catch_error(self, error):
         self.status_update.emit(f"An error occurred: {error}. Disconnecting sensor.")
         self.recording_status.emit(ECG.STATUS.FAILED_TO_CONNECT)
-        self._reset_connection()
+        self.resetClient()
 
     def _data_handler(self, characteristic, data):    # characteristic is unused but mandatory argument
 
