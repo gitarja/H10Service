@@ -124,7 +124,7 @@ class SensorClient(QObject):
         # self.client.errorOccurred.connect(self._catch_error)
         self.client.connected.connect(self._discover_services)
         self.client.discoveryFinished.connect(self._connect_hr_service, Qt.QueuedConnection)
-        self.client.disconnected.connect(self._reset_connection)
+        self.client.disconnected.connect(self.resetClient)
         self.client.connectToDevice()
 
     def disconnect_client(self):
