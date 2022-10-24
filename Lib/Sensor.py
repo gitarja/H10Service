@@ -89,7 +89,7 @@ class SensorClient(QObject):
 
     In Qt terminology client=central, server=peripheral.
     """
-    rr_status = pyqtSignal(bool)
+    rr_value = pyqtSignal(float)
     status_update = pyqtSignal(str)
     recording_status = pyqtSignal(int)
     start_recording = False
@@ -281,4 +281,5 @@ class SensorClient(QObject):
             # write rr into a csv file
             if self.start_recording:
                 self.log.write(ibi, record_time)
+            self.rr_value.emit(ibi)
 

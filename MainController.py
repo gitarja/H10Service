@@ -35,6 +35,7 @@ class MainController:
             self.scanner.status_update.connect(self.showStatus)
             self.scanner.sensor_client.recording_status.connect(self.updateECG)
             self.scanner.sensor_client.status_update.connect(self.showStatus)
+            self.scanner.sensor_client.rr_value.connect(self.updateStatusBar)
 
 
         # vicon
@@ -81,6 +82,9 @@ class MainController:
     @vicon_status.setter
     def vicon_status(self, value):
         self._vicon_status = value
+
+    def updateStatusBar(self, val):
+        self.view.statusbar.showMessage("IBI: "+str(val) )
 
     def updateVicon(self, value):
         if value == VICON.STATUS.START or value == VICON.STATUS.STOP:
