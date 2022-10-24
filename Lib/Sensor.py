@@ -179,7 +179,7 @@ class SensorClient(QObject):
             self.status_update.emit("HR characteristic is invalid.")
         self.hr_service.writeDescriptor(self.hr_notification, self.ENABLE_NOTIFICATION)
 
-    def _reset_connection(self):
+    def resetClient(self):
         self.status_update.emit(f"Discarding sensor at {self._sensor_address()}.")
 
         self._remove_service()
