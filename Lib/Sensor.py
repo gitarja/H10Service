@@ -185,7 +185,6 @@ class SensorClient(QObject):
 
     def resetClient(self):
         self.status_update.emit(f"Discarding sensor")
-
         self._remove_service()
         self._remove_client()
 
@@ -194,7 +193,6 @@ class SensorClient(QObject):
             self.hr_service.deleteLater()
         except Exception as e:
             self.status_update.emit(f"Couldn't remove service: {e}")
-            self.recording_status.emit(ECG.STATUS.FAILED_TO_CONNECT)
         finally:
             self.hr_service = None
             self.hr_notification = None
@@ -205,7 +203,6 @@ class SensorClient(QObject):
             self.client.deleteLater()
         except Exception as e:
             self.status_update.emit(f"Couldn't remove client: {e}")
-            self.recording_status.emit(ECG.STATUS.FAILED_TO_CONNECT)
         finally:
             self.client = None
 
