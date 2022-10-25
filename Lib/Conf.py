@@ -22,6 +22,7 @@ class VICON:
 # ECG status
 class ECG:
     RECORDING_PATH = settings["ECG"]["RECORDNING_PATH"]
+    SENSOR_ID = settings["ECG"]["SENSOR_ID"]
     class STATUS:
         SEARCHING_SENSORS = settings["ECG"]["STATUS"]["SEARCHING_SENSORS"]
         READY = settings["ECG"]["STATUS"]["READY"]

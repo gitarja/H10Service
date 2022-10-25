@@ -63,10 +63,9 @@ class SensorScanner(QObject):
 
 
     def _handle_scan_result(self):
-        for d in self.scanner.discoveredDevices():
-            print(d.name())
+
         polar_sensors = [d for d in self.scanner.discoveredDevices()
-                         if "Polar" in str(d.name())]    # TODO: comment why rssi needs to be negative
+                         if ("Polar" in str(d.name()))& (ECG.SENSOR_ID in str(d.name()))]    # TODO: comment why rssi needs to be negative
         if not polar_sensors:
             self.status_update.emit("Couldn't find sensors.")
             self.sensor_client.recording_status.emit(ECG.STATUS.FAILED_TO_CONNECT)

@@ -10,6 +10,7 @@ VICON:
 
 ECG:
   RECORDNING_PATH: "/home/human/results/"
+  SENSOR_ID: "B1161529"
   STATUS:
     FAILED_TO_CONNECT: -2
     SEARCHING_SENSORS: -1
