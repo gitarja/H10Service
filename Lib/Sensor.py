@@ -63,7 +63,8 @@ class SensorScanner(QObject):
 
 
     def _handle_scan_result(self):
-        print(self.scanner.discoveredDevices())
+        for d in self.scanner.discoveredDevices():
+            print(d.name())
         polar_sensors = [d for d in self.scanner.discoveredDevices()
                          if "Polar" in str(d.name())]    # TODO: comment why rssi needs to be negative
         if not polar_sensors:
@@ -252,7 +253,7 @@ class SensorClient(QObject):
         if not rr_interval:
             time.sleep(0.5)
             self.rr_count += 1
-            if self.rr_count > 7: # if the program fails 7 times to fetch the RR
+            if self.rr_count > 10: # if the program fails 7 times to fetch the RR
                 self.recording_status.emit(ECG.STATUS.FAILED_TO_CONNECT)
             return
 
