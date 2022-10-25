@@ -63,6 +63,7 @@ class SensorScanner(QObject):
 
 
     def _handle_scan_result(self):
+        print(self.scanner.discoveredDevices())
         polar_sensors = [d for d in self.scanner.discoveredDevices()
                          if "Polar" in str(d.name())]    # TODO: comment why rssi needs to be negative
         if not polar_sensors:
