@@ -3,7 +3,7 @@ from PyQt5.QtCore import QThread, pyqtSignal
 import datetime
 import socket
 from PyQt5.QtCore import QObject
-from Lib.Conf import VICON
+from Lib.Conf import VICON, ECG
 import serial
 from time import perf_counter
 
@@ -25,6 +25,8 @@ class TTLSender(QObject):
         # to start, we need A rising edge (or positive edge) is the low-to-high transition
         if not ser.isOpen():
             ser.open()
+        with open(ECG.RECORDING_PATH + "log.txt", "a") as myfile:
+            myfile.write("Sending ttl at: " + timeNow())
         print("Sending ttl at: " + timeNow())
         ser.write(HIGH)
         t1 = perf_counter()
