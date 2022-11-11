@@ -26,7 +26,7 @@ class TTLSender(QObject):
         if not ser.isOpen():
             ser.open()
         with open(ECG.RECORDING_PATH + "log.txt", "a") as myfile:
-            myfile.write("\n Sending ttl at: " + timeNow())
+            myfile.write("\nSending ttl at: " + timeNow())
         print("Sending ttl at: " + timeNow())
         ser.write(HIGH)
         t1 = perf_counter()
