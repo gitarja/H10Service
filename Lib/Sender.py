@@ -89,28 +89,20 @@ class UDPReceiver(QThread):
 
 class TCPSender:
 
-    def __init__(self):
-        self.start_event =  [
+
+
+
+
+    def send(self, tobii_url):
+        rest_url = tobii_url + "rest/recorder!send-event"
+
+        data =  [
             "start-stop-event",
             {
                 "time":datetime.datetime.now().timestamp(),
             }
         ]
-        self.stop_event = [
-            "stop-event",
-            {
-                "time":datetime.datetime.now().timestamp(),
-            }
-        ]
 
-
-
-    def send(self, tobii_url, start=True):
-        rest_url = tobii_url + "rest/recorder!send-event"
-
-        data = self.start_event
-        if start == False:
-            data = self.stop_event
         try:
             r = requests.post(url=rest_url, data=json.dumps(data))
             return r
