@@ -107,8 +107,10 @@ class MainController:
         return self.app.exec_()
 
     def sendTCPEvenets(self):
-        self.tcp_sender.send("http://tg03b-080201124421/")
+        # self.tcp_sender.send("http://tg03b-080201124421/")
         self.tcp_sender.send("http://tg03b-080201127411/")
+        self.tcp_sender.send("http://tg03b-080200052281/")
+        self.tcp_sender.send("http://tg03b-080201038371/")
 
     def startStopRecording(self):
         '''
