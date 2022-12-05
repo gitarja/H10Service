@@ -93,13 +93,13 @@ class TCPSender:
         self.start_event =  [
             "start-stop-event",
             {
-                "time":datetime.now().timestamp(),
+                "time":datetime.datetime.now().timestamp(),
             }
         ]
         self.stop_event = [
             "stop-event",
             {
-                "time":datetime.now().timestamp(),
+                "time":datetime.datetime.now().timestamp(),
             }
         ]
 
