@@ -8,6 +8,7 @@ import serial
 from PyQt5.QtCore import QThread
 import RPi.GPIO as GPIO
 import time
+import threading
 
 
 class MainController:
@@ -57,6 +58,7 @@ class MainController:
         # TCP sender
 
         self.tcp_sender = TCPSender()
+        self.tcp_thread = threading.Thread(target=self.sendTCPEvenets, args=[])
 
 
 
@@ -120,7 +122,7 @@ class MainController:
                 # send ttl
                 self.ttl_sender.send(self.ser)
                 # send TCP
-                self.sendTCPEvenets()
+                self.tcp_thread.start()
                 # start recording
                 self.scanner.startRecording()
                 self.playNotification()
@@ -131,7 +133,7 @@ class MainController:
                 # send ttl
                 self.ttl_sender.send(self.ser)
                 # send TCP
-                self.sendTCPEvenets()
+                self.tcp_thread.start()
 
                 self.playNotification()
 
@@ -140,7 +142,7 @@ class MainController:
                 # send ttl
                 self.ttl_sender.send(self.ser)
                 # send TCP
-                self.sendTCPEvenets()
+                self.tcp_thread.start()
                 self.scanner.stopRecording()
                 self.playNotification()
             elif self.is_ECG and not self.is_ttl:
@@ -150,7 +152,7 @@ class MainController:
                 # send ttl
                 self.ttl_sender.send(self.ser)
                 # send TCP
-                self.sendTCPEvenets()
+                self.tcp_thread.start()
                 self.playNotification()
 
 
