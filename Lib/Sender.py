@@ -6,6 +6,8 @@ from PyQt5.QtCore import QObject
 from Lib.Conf import VICON, ECG
 import serial
 from time import perf_counter
+import requests
+import json
 
 HIGH = 1
 LOW = 0
@@ -83,3 +85,41 @@ class UDPReceiver(QThread):
 
     def stop(self):
         self.sock.detach()
+
+
+class TCPSender:
+
+    def __init__(self):
+        self.start_event =  [
+            "start-stop-event",
+            {
+                "time":datetime.now().timestamp(),
+            }
+        ]
+        self.stop_event = [
+            "stop-event",
+            {
+                "time":datetime.now().timestamp(),
+            }
+        ]
+
+
+
+    def send(self, tobii_url, start=True):
+        rest_url = tobii_url + "rest/recorder!send-event"
+
+        data = self.start_event
+        if start == False:
+            data = self.stop_event
+        try:
+            r = requests.post(url=rest_url, data=json.dumps(data), timeout=0.00001)
+            return r
+        except requests.exceptions.HTTPError as errh:
+            print("Cannot connect")
+        except requests.exceptions.ConnectionError as errc:
+            print("Cannot connect")
+        except requests.exceptions.Timeout as errt:
+            print("Cannot connect")
+        except requests.exceptions.RequestException as err:
+            print("Cannot connect")
+

@@ -3,7 +3,7 @@ import sys
 from MainUI import Ui_MainWindow
 from Lib.Sensor import SensorScanner
 from Lib.Conf import ECG, TTL, BUZZER, VICON
-from Lib.Sender import UDPReceiver, TTLSender
+from Lib.Sender import UDPReceiver, TTLSender, TCPSender
 import serial
 from PyQt5.QtCore import QThread
 import RPi.GPIO as GPIO
@@ -54,6 +54,10 @@ class MainController:
                 stopbits=serial.STOPBITS_ONE,
             )
 
+        # TCP sender
+
+        self.tcp_sender = TCPSender()
+
 
 
 
@@ -101,6 +105,9 @@ class MainController:
             self.scanner.scan()
         return self.app.exec_()
 
+    def sendTCPEvenets(self):
+        self.tcp_sender.send("http://tg03b-080201127411/")
+
     def startStopRecording(self):
         '''
         TTL sender is
@@ -111,6 +118,8 @@ class MainController:
             if self.is_ECG and self.is_ttl:
                 # send ttl
                 self.ttl_sender.send(self.ser)
+                # send TCP
+                self.sendTCPEvenets()
                 # start recording
                 self.scanner.startRecording()
                 self.playNotification()
@@ -120,6 +129,8 @@ class MainController:
             else:
                 # send ttl
                 self.ttl_sender.send(self.ser)
+                # send TCP
+                self.sendTCPEvenets()
 
                 self.playNotification()
 
@@ -127,6 +138,8 @@ class MainController:
             if self.is_ECG and self.is_ttl:
                 # send ttl
                 self.ttl_sender.send(self.ser)
+                # send TCP
+                self.sendTCPEvenets()
                 self.scanner.stopRecording()
                 self.playNotification()
             elif self.is_ECG and not self.is_ttl:
@@ -135,6 +148,8 @@ class MainController:
             else:
                 # send ttl
                 self.ttl_sender.send(self.ser)
+                # send TCP
+                self.sendTCPEvenets()
                 self.playNotification()
 
 
