@@ -112,7 +112,7 @@ class TCPSender:
         if start == False:
             data = self.stop_event
         try:
-            r = requests.post(url=rest_url, data=json.dumps(data), timeout=0.00001)
+            r = requests.post(url=rest_url, data=json.dumps(data))
             return r
         except requests.exceptions.HTTPError as errh:
             print("Cannot connect")
