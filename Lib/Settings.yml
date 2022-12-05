@@ -9,7 +9,7 @@ VICON:
     STOP: 2
 
 ECG:
-  RECORDNING_PATH: "/home/human/results/"
+  RECORDNING_PATH: "/home/rp-0/results/"
   SENSOR_ID: "B1161529"
   STATUS:
     FAILED_TO_CONNECT: -2
