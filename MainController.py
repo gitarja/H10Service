@@ -58,7 +58,6 @@ class MainController:
 
         # TCP sender
         self.tcp_sender = TCPSender()
-        self.tcp_proces = Process(target=self.sendTCPEvenets)
 
 
 
@@ -123,8 +122,9 @@ class MainController:
             # a controll for ECG mode only
             if self.is_ECG and self.is_ttl:
                 # send TCP
-                self.tcp_proces.start()
-                self.tcp_proces.join(0.1)
+                tcp_proces = Process(target=self.sendTCPEvenets)
+                tcp_proces.start()
+
                 # send ttl
                 self.ttl_sender.send(self.ser)
                 # start recording
@@ -137,8 +137,8 @@ class MainController:
                 self.playNotification()
             else:
                 # send TCP
-                self.tcp_proces.start()
-                self.tcp_proces.join(0.1)
+                tcp_proces = Process(target=self.sendTCPEvenets)
+                tcp_proces.start()
                 # send ttl
                 self.ttl_sender.send(self.ser)
 
@@ -148,8 +148,8 @@ class MainController:
         elif self.vicon_status == VICON.STATUS.STOP:
             if self.is_ECG and self.is_ttl:
                 # send TCP
-                self.tcp_proces.start()
-                self.tcp_proces.join(0.1)
+                tcp_proces = Process(target=self.sendTCPEvenets)
+                tcp_proces.start()
                 # send ttl
                 self.ttl_sender.send(self.ser)
 
@@ -162,8 +162,8 @@ class MainController:
                 self.playNotification()
             else:
                 # send TCP
-                self.tcp_proces.start()
-                self.tcp_proces.join(0.1)
+                tcp_proces = Process(target=self.sendTCPEvenets)
+                tcp_proces.start()
                 # send ttl
                 self.ttl_sender.send(self.ser)
 
