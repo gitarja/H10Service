@@ -8,6 +8,7 @@ import serial
 from PyQt5.QtCore import QThread
 import RPi.GPIO as GPIO
 import time
+from multiprocessing import Process
 
 
 
@@ -56,8 +57,8 @@ class MainController:
             )
 
         # TCP sender
-
         self.tcp_sender = TCPSender()
+        self.tcp_proces = Process(target=self.sendTCPEvenets)
 
 
 
@@ -107,8 +108,9 @@ class MainController:
         return self.app.exec_()
 
     def sendTCPEvenets(self):
-        # self.tcp_sender.send("http://tg03b-080201124421/")
-        self.tcp_sender.send("http://tg03b-080201127411/")
+        self.tcp_sender.send("http://tg03b-080201127411/") # test
+
+        self.tcp_sender.send("http://tg03b-080201124421/")
         self.tcp_sender.send("http://tg03b-080200052281/")
         self.tcp_sender.send("http://tg03b-080201038371/")
 
@@ -120,40 +122,49 @@ class MainController:
         if self.vicon_status == VICON.STATUS.START:
             # a controll for ECG mode only
             if self.is_ECG and self.is_ttl:
+                # send TCP
+                self.tcp_proces.start()
                 # send ttl
                 self.ttl_sender.send(self.ser)
-                # send TCP
-                self.sendTCPEvenets()
+
                 # start recording
                 self.scanner.startRecording()
+                # play notif
                 self.playNotification()
             elif self.is_ECG and not self.is_ttl:
                 self.scanner.startRecording()
+                # play notif
                 self.playNotification()
             else:
+                # send TCP
+                self.tcp_proces.start()
                 # send ttl
                 self.ttl_sender.send(self.ser)
-                # send TCP
-                self.sendTCPEvenets()
 
+                # play notif
                 self.playNotification()
 
         elif self.vicon_status == VICON.STATUS.STOP:
             if self.is_ECG and self.is_ttl:
+                # send TCP
+                self.tcp_proces.start()
                 # send ttl
                 self.ttl_sender.send(self.ser)
-                # send TCP
-                self.sendTCPEvenets()
+
                 self.scanner.stopRecording()
+                # play notif
                 self.playNotification()
             elif self.is_ECG and not self.is_ttl:
                 self.scanner.stopRecording()
+                # play notif
                 self.playNotification()
             else:
+                # send TCP
+                self.tcp_proces.start()
                 # send ttl
                 self.ttl_sender.send(self.ser)
-                # send TCP
-                self.sendTCPEvenets()
+
+                # play notif
                 self.playNotification()
 
 
