@@ -124,9 +124,9 @@ class MainController:
             if self.is_ECG and self.is_ttl:
                 # send TCP
                 self.tcp_proces.start()
+                self.tcp_proces.join(0.1)
                 # send ttl
                 self.ttl_sender.send(self.ser)
-
                 # start recording
                 self.scanner.startRecording()
                 # play notif
@@ -138,6 +138,7 @@ class MainController:
             else:
                 # send TCP
                 self.tcp_proces.start()
+                self.tcp_proces.join(0.1)
                 # send ttl
                 self.ttl_sender.send(self.ser)
 
@@ -148,6 +149,7 @@ class MainController:
             if self.is_ECG and self.is_ttl:
                 # send TCP
                 self.tcp_proces.start()
+                self.tcp_proces.join(0.1)
                 # send ttl
                 self.ttl_sender.send(self.ser)
 
@@ -161,6 +163,7 @@ class MainController:
             else:
                 # send TCP
                 self.tcp_proces.start()
+                self.tcp_proces.join(0.1)
                 # send ttl
                 self.ttl_sender.send(self.ser)
 
