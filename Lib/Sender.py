@@ -96,7 +96,7 @@ class TCPSender:
         c.setopt(pycurl.URL, url)
         c.setopt(pycurl.POST, True)
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/json'])
-        c.setopt(pycurl.TIMEOUT, 10)
+        c.setopt(pycurl.TIMEOUT, 0.1)
         c.setopt(pycurl.WRITEFUNCTION, buffer.write)
         c.setopt(pycurl.POSTFIELDS, data)
         c.setopt(pycurl.SSL_VERIFYPEER, 0)   
@@ -107,7 +107,7 @@ class TCPSender:
 
         buffer.close()
         c.close()
-        return resp
+        return True
 
     def sendCurl(self, tobii_url):
         rest_url = tobii_url + "rest/recorder!send-event"

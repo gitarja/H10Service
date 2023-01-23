@@ -8,7 +8,7 @@ import serial
 from PyQt5.QtCore import QThread
 import RPi.GPIO as GPIO
 import time
-from multiprocessing import Process
+from multiprocessing import Process, Pool
 
 
 
@@ -107,10 +107,9 @@ class MainController:
         return self.app.exec_()
 
     def sendTCPEvenets(self):
-
         tcp_proces = Process(target=self.tcp_sender.sendCurl, args=("http://192.168.17.101/", ))
+        tcp_proces2 = Process(target=self.tcp_sender.sendCurl, args=("http://192.168.17.103/",))
         tcp_proces.start()
-        tcp_proces2 = Process(target=self.tcp_sender.sendCurl, args=("http://192.168.17.103/", ))
         tcp_proces2.start()
 
         # self.tcp_sender.send("http://tg03b-080201124421/")
