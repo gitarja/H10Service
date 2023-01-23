@@ -8,7 +8,8 @@ import serial
 from time import perf_counter
 import requests
 import json
-
+import pycurl
+from io import BytesIO
 HIGH = 1
 LOW = 0
 
@@ -89,8 +90,47 @@ class UDPReceiver(QThread):
 
 class TCPSender:
 
+    def curlPost(self, url, data, iface=None):
+        c = pycurl.Curl()
+        buffer = BytesIO()
+        c.setopt(pycurl.URL, url)
+        c.setopt(pycurl.POST, True)
+        c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/json'])
+        c.setopt(pycurl.TIMEOUT, 10)
+        c.setopt(pycurl.WRITEFUNCTION, buffer.write)
+        c.setopt(pycurl.POSTFIELDS, data)
+        if iface:
+            c.setopt(pycurl.INTERFACE, iface)
+        c.perform()
 
+        # Json response
+        resp = buffer.getvalue().decode('UTF-8')
 
+        #  Check response is a JSON if not there was an error
+        try:
+            resp = json.loads(resp)
+        except json.decoder.JSONDecodeError:
+            pass
+
+        buffer.close()
+        c.close()
+        return resp
+
+    def sendCurl(self, tobii_url):
+        rest_url = tobii_url + "rest/recorder!send-event"
+
+        data = [
+            "start-stop-event",
+            {
+                "time": datetime.datetime.now().timestamp(),
+            }
+        ]
+
+        try:
+            r = self.curlPost(url=rest_url, data=json.dumps(data), iface="eth1")
+            return r
+        except:
+            print("Cannot connect")
 
 
     def send(self, tobii_url):

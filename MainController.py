@@ -107,11 +107,13 @@ class MainController:
         return self.app.exec_()
 
     def sendTCPEvenets(self):
-        self.tcp_sender.send("http://tg03b-080201127411/") # test
 
-        self.tcp_sender.send("http://tg03b-080201124421/")
-        self.tcp_sender.send("http://tg03b-080200052281/")
-        self.tcp_sender.send("http://tg03b-080201038371/")
+        tcp_proces = Process(target=self.tcp_sender.sendCurl, args=("http://tg03b-080201127411/", ))
+        tcp_proces.start()
+
+        # self.tcp_sender.send("http://tg03b-080201124421/")
+        # self.tcp_sender.send("http://tg03b-080200052281/")
+        # self.tcp_sender.send("http://tg03b-080201038371/")
 
     def startStopRecording(self):
         '''
@@ -122,8 +124,9 @@ class MainController:
             # a controll for ECG mode only
             if self.is_ECG and self.is_ttl:
                 # send TCP
-                tcp_proces = Process(target=self.sendTCPEvenets)
-                tcp_proces.start()
+                # tcp_proces = Process(target=self.sendTCPEvenets)
+                # tcp_proces.start()
+                self.sendTCPEvenets()
 
                 # send ttl
                 self.ttl_sender.send(self.ser)
@@ -137,8 +140,9 @@ class MainController:
                 self.playNotification()
             else:
                 # send TCP
-                tcp_proces = Process(target=self.sendTCPEvenets)
-                tcp_proces.start()
+                # tcp_proces = Process(target=self.sendTCPEvenets)
+                # tcp_proces.start()
+                self.sendTCPEvenets()
                 # send ttl
                 self.ttl_sender.send(self.ser)
 
@@ -148,8 +152,9 @@ class MainController:
         elif self.vicon_status == VICON.STATUS.STOP:
             if self.is_ECG and self.is_ttl:
                 # send TCP
-                tcp_proces = Process(target=self.sendTCPEvenets)
-                tcp_proces.start()
+                # tcp_proces = Process(target=self.sendTCPEvenets)
+                # tcp_proces.start()
+                self.sendTCPEvenets()
                 # send ttl
                 self.ttl_sender.send(self.ser)
 
@@ -162,8 +167,9 @@ class MainController:
                 self.playNotification()
             else:
                 # send TCP
-                tcp_proces = Process(target=self.sendTCPEvenets)
-                tcp_proces.start()
+                # tcp_proces = Process(target=self.sendTCPEvenets)
+                # tcp_proces.start()
+                self.sendTCPEvenets()
                 # send ttl
                 self.ttl_sender.send(self.ser)
 
