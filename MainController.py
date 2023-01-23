@@ -108,8 +108,10 @@ class MainController:
 
     def sendTCPEvenets(self):
 
-        tcp_proces = Process(target=self.tcp_sender.sendCurl, args=("http://tg03b-080201127411/", ))
+        tcp_proces = Process(target=self.tcp_sender.sendCurl, args=("http://192.168.17.101/", ))
         tcp_proces.start()
+        tcp_proces2 = Process(target=self.tcp_sender.sendCurl, args=("http://192.168.17.103/", ))
+        tcp_proces2.start()
 
         # self.tcp_sender.send("http://tg03b-080201124421/")
         # self.tcp_sender.send("http://tg03b-080200052281/")

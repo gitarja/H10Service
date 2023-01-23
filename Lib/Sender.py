@@ -99,18 +99,11 @@ class TCPSender:
         c.setopt(pycurl.TIMEOUT, 10)
         c.setopt(pycurl.WRITEFUNCTION, buffer.write)
         c.setopt(pycurl.POSTFIELDS, data)
+        c.setopt(pycurl.SSL_VERIFYPEER, 0)   
+        c.setopt(pycurl.SSL_VERIFYHOST, 0)
         if iface:
             c.setopt(pycurl.INTERFACE, iface)
         c.perform()
-
-        # Json response
-        resp = buffer.getvalue().decode('UTF-8')
-
-        #  Check response is a JSON if not there was an error
-        try:
-            resp = json.loads(resp)
-        except json.decoder.JSONDecodeError:
-            pass
 
         buffer.close()
         c.close()
@@ -128,9 +121,11 @@ class TCPSender:
 
         try:
             r = self.curlPost(url=rest_url, data=json.dumps(data), iface="eth1")
+        
             return r
         except:
             print("Cannot connect")
+        
 
 
     def send(self, tobii_url):
